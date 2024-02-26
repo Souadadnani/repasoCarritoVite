@@ -1,8 +1,9 @@
 import { URL_SERVER } from "../../constantes"
 
-export default function Articulos({setPedirArticulosDisponibles, setArticulosCesta, articulosDisponibles, setArticulosDesponibles}){
+export default function Articulos({setPedirArticulosDisponibles, setArticulosCesta, articulosDisponibles}){
     
     const agregarArticuloCesta = (articulo) =>{
+        
         fetch(`${URL_SERVER}articulos/${articulo.id}`)
             .then(response=>{
                 if(response.ok){
@@ -21,7 +22,6 @@ export default function Articulos({setPedirArticulosDisponibles, setArticulosCes
                             }
                             return art;
                         });
-                        guardarEnCesta(nuevaCesta);
                         return nuevaCesta;
                     }
                     return [...elementosCesta, {...articulo, unidades: 1}];
@@ -29,13 +29,19 @@ export default function Articulos({setPedirArticulosDisponibles, setArticulosCes
                 actualizar(articulo.id, data);
             }})
     }
-    const actualizar = (id, data) => {
-        fetch(`${URL_SERVER}articulos/${id}`, {
-            method: 'PATCH',
+    const actualizar = (idArticulo, data) => {
+        const articulo ={
+            id: data.id,
+            nombre: data.nombre,
+            precio: data.precio,
+            unidades: data.unidades-1
+        }
+        fetch(`${URL_SERVER}articulos/${idArticulo}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({unidades: data.unidades -1})
+            body: JSON.stringify(articulo)
         })
             .then(response=>{
                 if(response.ok){
@@ -69,6 +75,7 @@ export default function Articulos({setPedirArticulosDisponibles, setArticulosCes
 
     return(
         <div>
+            <button>Añadir Articulo al Stock</button>
             <h2>Articulos disponinbles:</h2>
             <table>
                 <thead>

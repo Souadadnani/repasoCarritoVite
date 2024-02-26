@@ -4,12 +4,14 @@ import Articulos from './componentes/Articulos'
 import BarraBusqueda from './componentes/BarraBusqueda'
 import './App.css'
 import { URL_SERVER } from '../constantes'
+import FormAddArticulo from './componentes/FormAddArticulo'
 
 function App() {
   const [buscada, setBuscada] = useState("");
   const [articulosCesta, setArticulosCesta] = useState([]);
   const [articulosDisponibles, setArticulosDesponibles] = useState([]);
-  const [pedirArticulosDisponibles, setPedirArticulosDisponibles] = useState(true);
+  const [pedirArticulosDisponibles, setPedirArticulosDisponibles] = useState(false);
+  const [articuloNuevo, setArticuloNuevo] = useState({});
 
   useEffect(()=>{
     fetch(`${URL_SERVER}articulos?nombre_like=${buscada}&unidades_gt=0&_sort=nombre&_order=asc`)
@@ -22,9 +24,9 @@ function App() {
         setArticulosDesponibles(articulos);
       })
       .catch(error=>{
-        setPedirArticulosDisponibles(false);//???
         console.error(error.message);
-      })     
+      }) 
+      setPedirArticulosDisponibles(false);    
   }, [buscada, articulosCesta, pedirArticulosDisponibles]);
 
   return (
@@ -36,8 +38,8 @@ function App() {
         articulosCesta={articulosCesta}
         setArticulosCesta={setArticulosCesta}
         articulosDisponibles={articulosDisponibles}
-        setArticulosDesponibles={setArticulosDesponibles}
-      ></Articulos>    
+      ></Articulos>   
+      <FormAddArticulo articuloNuevo={articuloNuevo} setArticuloNuevo={setArticuloNuevo} setArticulosDesponibles={setArticulosDesponibles}></FormAddArticulo> 
     </>
   )
 }
